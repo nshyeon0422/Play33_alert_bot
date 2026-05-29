@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+src/play33_alert_bot/__init__.py
+src/play33_alert_bot/__main__.py
+src/play33_alert_bot/config.py
+src/play33_alert_bot/main.py
+src/play33_alert_bot/notifier.py
+src/play33_alert_bot/play33.py
+src/play33_alert_bot.egg-info/PKG-INFO
+src/play33_alert_bot.egg-info/SOURCES.txt
+src/play33_alert_bot.egg-info/dependency_links.txt
+src/play33_alert_bot.egg-info/requires.txt
+src/play33_alert_bot.egg-info/top_level.txt
