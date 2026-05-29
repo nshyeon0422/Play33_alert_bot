@@ -33,19 +33,15 @@ def format_alert_message(config: Config, newly_open_times: tuple[str, ...], refe
 def run_once(config: Config, notifier: TelegramNotifier) -> None:
     target_url = build_reservation_url(config.branch, config.target_date, base_url=config.base_url)
     target_snapshot = fetch_snapshot(target_url, user_agent=config.user_agent)
-
-# Always alert on any open slot for the target date.
-# The previous behavior compared against `REFERENCE_DATE`; that is no longer
-# required — if `TARGET_DATE` has any open times, send an alert.
     newly_open_times = target_snapshot.open_times
     reference_open_times = tuple()
 
-    logging.info("Target open times: %s", ", ".join(target_snapshot.open_times) or "-")
+    logging.info("Open times on target date: %s", ", ".join(target_snapshot.open_times) or "-")
     if newly_open_times:
         notifier.send_message(format_alert_message(config, newly_open_times, reference_open_times))
-        logging.warning("Alert sent: %s", ", ".join(newly_open_times))
+        logging.warning("Alert sent for open slot(s): %s", ", ".join(newly_open_times))
     else:
-        logging.info("No newly open times")
+        logging.info("No open slots found on target date")
 
 
 def main() -> None:
