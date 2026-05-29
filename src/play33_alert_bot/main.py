@@ -29,15 +29,11 @@ def run_once(config: Config, notifier: TelegramNotifier) -> None:
     target_url = build_reservation_url(config.branch, config.target_date, base_url=config.base_url)
     target_snapshot = fetch_snapshot(target_url, user_agent=config.user_agent)
 
-    if config.reference_date:
-        reference_url = build_reservation_url(config.branch, config.reference_date, base_url=config.base_url)
-        reference_snapshot = fetch_snapshot(reference_url, user_agent=config.user_agent)
-        diff = compare_snapshots(target_snapshot, reference_snapshot)
-        newly_open_times = diff.newly_open_times
-        reference_open_times = reference_snapshot.open_times
-    else:
-        newly_open_times = target_snapshot.open_times
-        reference_open_times = tuple()
+# Always alert on any open slot for the target date.
+# The previous behavior compared against `REFERENCE_DATE`; that is no longer
+# required — if `TARGET_DATE` has any open times, send an alert.
+    newly_open_times = target_snapshot.open_times
+    reference_open_times = tuple()
 
     logging.info("Target open times: %s", ", ".join(target_snapshot.open_times) or "-")
     if newly_open_times:
