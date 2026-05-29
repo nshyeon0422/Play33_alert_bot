@@ -12,17 +12,22 @@ from .play33 import build_reservation_url, compare_snapshots, fetch_snapshot
 
 def format_alert_message(config: Config, newly_open_times: tuple[str, ...], reference_open_times: tuple[str, ...]) -> str:
     target_url = build_reservation_url(config.branch, config.target_date, base_url=config.base_url)
-    reference_url = build_reservation_url(config.branch, config.reference_date, base_url=config.base_url) if config.reference_date else "-"
-    return (
-        "Play33 예약 알림\n"
-        f"매장: {config.branch}\n"
-        f"대상 날짜: {config.target_date}\n"
-        f"비교 기준: {config.reference_date or '-'}\n"
-        f"대상 URL: {target_url}\n"
-        f"기준 URL: {reference_url}\n"
-        f"열린 시간: {', '.join(newly_open_times) or '-'}\n"
-        f"기준 열린 시간: {', '.join(reference_open_times) or '-'}"
-    )
+    lines: list[str] = [
+        "Play33 예약 알림",
+        f"매장: {config.branch}",
+        f"대상 날짜: {config.target_date}",
+        f"대상 URL: {target_url}",
+        f"열린 시간: {', '.join(newly_open_times) or '-'}",
+    ]
+
+    # Include reference details only when a reference date is configured.
+    if config.reference_date:
+        reference_url = build_reservation_url(config.branch, config.reference_date, base_url=config.base_url)
+        lines.insert(3, f"비교 기준: {config.reference_date}")
+        lines.insert(4, f"기준 URL: {reference_url}")
+        lines.append(f"기준 열린 시간: {', '.join(reference_open_times) or '-'}")
+
+    return "\n".join(lines)
 
 
 def run_once(config: Config, notifier: TelegramNotifier) -> None:
